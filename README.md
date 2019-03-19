@@ -27,7 +27,7 @@ Also, This repository will create 3 workers with 1 master Kubernetes cluster, by
 2. Install required packages.
 
    ```
-   $ apt update && apt install git python python-pip unzip wget vim -y \ 
+   $ apt update && apt install git python python-pip unzip wget vim -y \
        git clone https://github.com/alicek106/aws-terraform-kubernetes.git && \
        cd aws-terraform-kubernetes/terraform
    ```
