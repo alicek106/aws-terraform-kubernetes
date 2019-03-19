@@ -34,7 +34,7 @@ resource "aws_vpc_dhcp_options_association" "dns_resolver" {
 
 resource "aws_key_pair" "default_keypair" {
   key_name = "${var.default_keypair_name}"
-  public_key = "${var.default_keypair_public_key}"
+  public_key = "${local.default_keypair_public_key}"
 }
 
 
