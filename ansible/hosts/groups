@@ -1,14 +1,26 @@
+#######################
+## EC2 Dynamic Inventory Groups
+
 [tag_ansibleNodeType_etcd]
 
 [tag_ansibleNodeType_worker]
 
 [tag_ansibleNodeType_controller]
 
-[etcd:children]
-tag_ansibleNodeType_etcd
 
-[worker:children]
+#######################
+#### Kubespray Groups
+
+[etcd:children]
+tag_ansibleNodeType_controller
+
+[kube-node:children]
 tag_ansibleNodeType_worker
 
-[controller:children]
+[kube-master:children]
 tag_ansibleNodeType_controller
+
+[k8s-cluster:children]
+kube-master
+kube-node
+
