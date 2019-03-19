@@ -96,6 +96,14 @@ Also, This repository will create 3 workers with 1 master Kubernetes cluster, by
    ```
 
 
+## Cleanup
+
+In terraform directory, use below command. It will destroy all objects, including EC2 Instances
+
+```
+$ terraform destroy
+```
+
 
 ## Limitations
 
