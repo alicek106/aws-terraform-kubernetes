@@ -15,12 +15,14 @@ resource "aws_instance" "etcd" {
     availability_zone = "${var.zone}"
     vpc_security_group_ids = ["${aws_security_group.kubernetes.id}"]
     key_name = "${var.default_keypair_name}"
-
-    tags {
-      Owner = "${var.owner}"
-      Name = "etcd-${count.index}"
-      ansibleFilter = "${var.ansibleFilter}"
-      ansibleNodeType = "etcd"
-      ansibleNodeName = "etcd.${count.index}"
-    }
+    tags = "${merge(
+    local.common_tags,
+      map(
+        "Owner", "${var.owner}",
+        "Name", "etcd-${count.index}",
+        "ansibleFilter", "${var.ansibleFilter}",
+        "ansibleNodeType", "etcd",
+        "ansibleNodeName", "etcd.${count.index}"
+      )
+    )}"
 }

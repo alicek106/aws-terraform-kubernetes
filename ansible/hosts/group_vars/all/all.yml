@@ -44,7 +44,7 @@ bin_dir: /usr/local/bin
 ## like you would do when using nova-client before starting the playbook.
 ## Note: The 'external' cloud provider is not supported. 
 ## TODO(riverzhang): https://kubernetes.io/docs/tasks/administer-cluster/running-cloud-controller/#running-cloud-controller-manager
-#cloud_provider:
+cloud_provider: aws
 
 ## kubeadm deployment mode
 kubeadm_enabled: true
