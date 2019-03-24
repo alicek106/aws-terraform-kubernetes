@@ -7,18 +7,21 @@
 
 [tag_ansibleNodeType_controller]
 
+[tag_ansibleNodeType_controller_etcd]
 
 #######################
 #### Kubespray Groups
 
 [etcd:children]
-tag_ansibleNodeType_controller
+tag_ansibleNodeType_controller_etcd
+tag_ansibleNodeType_etcd
 
 [kube-node:children]
 tag_ansibleNodeType_worker
 
 [kube-master:children]
 tag_ansibleNodeType_controller
+tag_ansibleNodeType_controller_etcd
 
 [k8s-cluster:children]
 kube-master

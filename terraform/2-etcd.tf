@@ -4,7 +4,7 @@
 # Delete the below comments to activate etcd.
 # But I commented because I'm using kubespray for only 1 master, 1 etcd in 1 instance (default)
 resource "aws_instance" "etcd" {
-    count = 1
+    count = 2
     ami = "${lookup(var.amis, var.region)}"
     instance_type = "${var.etcd_instance_type}"
 
@@ -21,6 +21,6 @@ resource "aws_instance" "etcd" {
       Name = "etcd-${count.index}"
       ansibleFilter = "${var.ansibleFilter}"
       ansibleNodeType = "etcd"
-      ansibleNodeName = "etcd${count.index}"
+      ansibleNodeName = "etcd.${count.index}"
     }
 }

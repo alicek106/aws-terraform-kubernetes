@@ -22,7 +22,7 @@ resource "aws_instance" "worker" {
       Name = "worker-${count.index}"
       ansibleFilter = "${var.ansibleFilter}"
       ansibleNodeType = "worker"
-      ansibleNodeName = "worker${count.index}"
+      ansibleNodeName = "worker.${count.index}"
     }
 }
 

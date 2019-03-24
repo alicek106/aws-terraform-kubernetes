@@ -713,7 +713,8 @@ class Ec2Inventory(object):
         if not hostname:
             hostname = dest
         else:
-            hostname = self.to_safe(hostname).lower()
+            print('Do nothing to keep DNS 1123 rule in EC2 instance hostname') # Edited 2019. 03. 24
+            # hostname = self.to_safe(hostname).lower()
 
         # if we only want to include hosts that match a pattern, skip those that don't
         if self.pattern_include and not self.pattern_include.match(hostname):
@@ -789,6 +790,7 @@ class Ec2Inventory(object):
         # Inventory: Group by tag keys
         if self.group_by_tag_keys:
             for k, v in instance.tags.items():
+                print(v)
                 if self.expand_csv_tags and v and ',' in v:
                     values = map(lambda x: x.strip(), v.split(','))
                 else:
