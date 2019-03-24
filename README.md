@@ -146,7 +146,7 @@ worker.2            Ready    node     5m26s   v1.12.3
 
 
 
-<center><img src="https://github.com/alicek106/aws-terraform-kubernetes/blob/master/pictures/kube2.png?raw=true" width="600" height="350"></center>
+<p align="center"><img src="https://github.com/alicek106/aws-terraform-kubernetes/blob/master/pictures/kube2.png?raw=true" width="570" height="350"></p>
 
 ## Cleanup
 
