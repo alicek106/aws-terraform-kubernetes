@@ -96,6 +96,32 @@ Also, This repository will create 3 workers with 1 master Kubernetes cluster, by
    ```
 
 
+## Test
+
+SSH to your master instance, and get nodes.
+
+```
+root@aws-kube:/aws-terraform-kubernetes/ansible# ssh -i ../keys/tf-kube ubuntu@<Master IP>
+...
+Last login: Tue Mar 19 06:16:33 2019 from <Master IP>
+ubuntu@controller0:~$ sudo su
+root@controller0:/home/ubuntu# kubectl get node
+NAME          STATUS   ROLES    AGE     VERSION
+controller0   Ready    master   3m56s   v1.12.3
+worker0       Ready    node     3m16s   v1.12.3
+worker1       Ready    node     3m15s   v1.12.3
+worker2       Ready    node     3m16s   v1.12.3
+```
+
+
+## Cleanup
+
+In terraform directory, use below command. It will destroy all objects, including EC2 Instances
+
+```
+$ terraform destroy
+```
+
 
 ## Limitations
 
