@@ -1,3 +1,34 @@
+#############################
+# Adjustable variables
+#############################
+
+variable number_of_controller{
+
+  description = "The number of controller, only acts as controller"
+  default = 2
+}
+
+variable number_of_etcd{
+  description = "The number of etcd, only acts as etcd"
+  default = 2
+}
+
+variable number_of_controller_etcd{
+  description = "The number of nodes which act as controller and etcd simultaneously"
+  default = 1
+}
+
+variable number_of_worker{
+  description = "The number of worker nodes"
+  default = 3
+}
+
+
+
+##########################
+# Default variables (you can change for customizing)
+##########################
+
 variable control_cidr {
   description = "CIDR for maintenance: inbound traffic will be allowed from this IPs"
   default = "0.0.0.0/0"

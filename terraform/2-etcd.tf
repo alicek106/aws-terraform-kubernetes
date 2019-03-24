@@ -4,7 +4,7 @@
 # Delete the below comments to activate etcd.
 # But I commented because I'm using kubespray for only 1 master, 1 etcd in 1 instance (default)
 resource "aws_instance" "etcd" {
-    count = 2
+    count = "${var.number_of_etcd}"
     ami = "${lookup(var.amis, var.region)}"
     instance_type = "${var.etcd_instance_type}"
 

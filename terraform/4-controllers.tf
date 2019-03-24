@@ -3,7 +3,7 @@
 ############################
 
 resource "aws_instance" "controller" {
-    count = 2
+    count = "${var.number_of_controller}"
     ami = "${lookup(var.amis, var.region)}"
     instance_type = "${var.controller_instance_type}"
 
@@ -28,7 +28,7 @@ resource "aws_instance" "controller" {
 }
 
 resource "aws_instance" "controller_etcd" {
-    count = 1
+    count = "${var.number_of_controller_etcd}"
     ami = "${lookup(var.amis, var.region)}"
     instance_type = "${var.controller_instance_type}"
 
