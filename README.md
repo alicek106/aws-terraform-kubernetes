@@ -37,8 +37,8 @@ Instnace-C # number_of_controller_etcd = 1
 
 [etcd]
 Instnace-C # number_of_controller_etcd = 1
-Instnace-D # number_of_controller_etcd = 1
-Instnace-E # number_of_controller_etcd = 1
+Instnace-D # number_of_etcd = 1
+Instnace-E # number_of_etcd = 1
 
 [kube-worker]
 ...
