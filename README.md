@@ -1,6 +1,8 @@
 ## Kubernetes Setup using AWS and Terraform
 
-This repository is copied from opencredo/k8s-terraform-ansible-sample
+<img src="https://github.com/alicek106/aws-terraform-kubernetes/blob/master/pictures/kube.png?raw=true">
+
+This repository is copied from opencredo/k8s-terraform-ansible-sample, but it didn't consider kubespray.
 
 > https://github.com/opencredo/k8s-terraform-ansible-sample
 
@@ -26,7 +28,7 @@ number_of_etcd = 2
 
 number_of_controller_etcd = 1
 ```
-
+.. is same to
 ```
 [kube-master]
 Instnace-A # number_of_controller = 2
@@ -42,7 +44,6 @@ Instnace-E # number_of_controller_etcd = 1
 ...
 
 ```
-
 
 
 ## Step 1. Terraform
@@ -142,6 +143,10 @@ worker.0            Ready    node     5m26s   v1.12.3
 worker.1            Ready    node     5m26s   v1.12.3
 worker.2            Ready    node     5m26s   v1.12.3
 ```
+
+
+
+<p align="center"><img src="https://github.com/alicek106/aws-terraform-kubernetes/blob/master/pictures/kube2.png?raw=true" width="570" height="350"></p>
 
 ## Cleanup
 
