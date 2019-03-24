@@ -31,14 +31,14 @@ number_of_controller_etcd = 1
 .. is same to
 ```
 [kube-master]
-Instnace-A # number_of_controller = 2
-Instnace-B # number_of_controller = 2
-Instnace-C # number_of_controller_etcd = 1
+Instnace-A # (1st master)
+Instnace-B # (2nd master)
+Instnace-C # (3rd master)  (1st etcd)
 
 [etcd]
-Instnace-C # number_of_controller_etcd = 1
-Instnace-D # number_of_etcd = 1
-Instnace-E # number_of_etcd = 1
+Instnace-C # (3rd master)  (1st etcd)
+Instnace-D #               (2nd etcd)
+Instnace-E #               (3rd etcd)
 
 [kube-worker]
 ...
