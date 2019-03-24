@@ -1,18 +1,47 @@
-## Kubernetes Quickstart using AWS and Terraform
+## Kubernetes Setup using AWS and Terraform
 
 This repository is copied from opencredo/k8s-terraform-ansible-sample
 
 > https://github.com/opencredo/k8s-terraform-ansible-sample
 
-Also, This repository will create 3 workers with 1 master Kubernetes cluster, by default.
+Also, This repository will create 3 workers, 3 master, and 3 etcd Kubernetes cluster by default. You can adjust the number of each node by changing below **Variables**. 
 
 
 
-## Variables 
+## Step 0. Variables in variables.tf 
 
-- **3-workers.tf** : The number of workers. Default is set to 3 in ```count```
+You can change configuration of file ```variables.tf```, such as the number of each node.
 
-- **4-controllers.tf** : The number of master. Default is set to 1 in ```count```
+- **number_of_controller** : The number of master nodes that act only as a master role. 
+- **number_of_etcd** : The number of etcd nodes that act only as a etcd role. 
+- **number_of_controller_etcd** : The number of nodes that run etcd and master **at the same time**.
+- **number_of_worker** : The number of workers. 
+
+It is recommended that the number of **[etcd + controller_etcd]**, **[controller + controller_etcd]** to be odd. For example, below setting is desirable and can be converted into inventory as shown below. Note that below inventory and setting is just example, not really written configuration.
+
+```
+number_of_controller = 2
+
+number_of_etcd = 2
+
+number_of_controller_etcd = 1
+```
+
+```
+[kube-master]
+Instnace-A # number_of_controller = 2
+Instnace-B # number_of_controller = 2
+Instnace-C # number_of_controller_etcd = 1
+
+[etcd]
+Instnace-C # number_of_controller_etcd = 1
+Instnace-D # number_of_controller_etcd = 1
+Instnace-E # number_of_controller_etcd = 1
+
+[kube-worker]
+...
+
+```
 
 
 
@@ -54,7 +83,7 @@ Also, This repository will create 3 workers with 1 master Kubernetes cluster, by
    $ terraform init && ssh-keygen -t rsa -N "" -f ../keys/tf-kube
    ```
 
-6. Create all objects in AWS. It will trigger to create VPC, Subnet, etc.
+7. Create all objects in AWS. It will trigger to create VPC, Subnet, etc.
 
    ```
    $ terraform apply
@@ -95,7 +124,6 @@ Also, This repository will create 3 workers with 1 master Kubernetes cluster, by
    $ ansible-playbook -b --private-key ../keys/tf-kube kubespray-2.8.1/cluster.yml
    ```
 
-
 ## Test
 
 SSH to your master instance, and get nodes.
@@ -105,14 +133,15 @@ root@aws-kube:/aws-terraform-kubernetes/ansible# ssh -i ../keys/tf-kube ubuntu@<
 ...
 Last login: Tue Mar 19 06:16:33 2019 from <Master IP>
 ubuntu@controller0:~$ sudo su
-root@controller0:/home/ubuntu# kubectl get node
-NAME          STATUS   ROLES    AGE     VERSION
-controller0   Ready    master   3m56s   v1.12.3
-worker0       Ready    node     3m16s   v1.12.3
-worker1       Ready    node     3m15s   v1.12.3
-worker2       Ready    node     3m16s   v1.12.3
+root@controller:/home/ubuntu# kubectl get no
+NAME                STATUS   ROLES    AGE     VERSION
+controller.0        Ready    master   7m40s   v1.12.3
+controller.1        Ready    master   6m19s   v1.12.3
+controller.etcd.0   Ready    master   6m21s   v1.12.3
+worker.0            Ready    node     5m26s   v1.12.3
+worker.1            Ready    node     5m26s   v1.12.3
+worker.2            Ready    node     5m26s   v1.12.3
 ```
-
 
 ## Cleanup
 
@@ -122,7 +151,9 @@ In terraform directory, use below command. It will destroy all objects, includin
 $ terraform destroy
 ```
 
-
 ## Limitations
 
-- It assumes that **master** acts as an **etcd** node. It should be modified to separate **etcd** and **master** role.
+- It assumes that **master** acts as an **etcd** node. It should be modified to separate **etcd** and **master** role.(solved)
+- Health check of master node is impossible using https:6443 in ELB. 
+- Node IP range is limited beacuse node IP is allocated between VPC CIDR + 10, 20, 30... etc.  It should be changed if you want to use in production environment.
+- Punctuation (.) is compatible with DNS 1123 rule, but it seems it cannot be used in hostname (ignored..)
