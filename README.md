@@ -26,7 +26,7 @@ number_of_etcd = 2
 
 number_of_controller_etcd = 1
 ```
-
+.. is same to
 ```
 [kube-master]
 Instnace-A # number_of_controller = 2
