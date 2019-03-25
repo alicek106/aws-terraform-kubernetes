@@ -1,9 +1,14 @@
+locals {
+  common_tags = "${map(
+    "kubernetes.io/cluster/${var.cluster_id_tag}", "${var.cluster_id_value}"
+  )}"
+}
+
 #############################
 # Adjustable variables
 #############################
 
 variable number_of_controller{
-
   description = "The number of controller, only acts as controller"
   default = 2
 }
@@ -23,7 +28,15 @@ variable number_of_worker{
   default = 3
 }
 
+variable cluster_id_tag{
+  description = "Cluster ID tag for kubespray"
+  default = "alice"
+}
 
+variable cluster_id_value{
+  description = "Cluster ID value, it can be shared or owned"
+  default = "owned"
+}
 
 ##########################
 # Default variables (you can change for customizing)
