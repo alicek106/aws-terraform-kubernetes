@@ -10,48 +10,12 @@ Also, This repository will create 3 workers, 3 master, and 3 etcd Kubernetes clu
 
 
 
-## Step 0. Variables in variables.tf 
-
-You can change configuration of file ```variables.tf```, such as the number of each node.
-
-- **number_of_controller** : The number of master nodes that act only as a master role. 
-- **number_of_etcd** : The number of etcd nodes that act only as a etcd role. 
-- **number_of_controller_etcd** : The number of nodes that run etcd and master **at the same time**.
-- **number_of_worker** : The number of workers. 
-
-It is recommended that the number of **[etcd + controller_etcd]**, **[controller + controller_etcd]** to be odd. For example, below setting is desirable and can be converted into inventory as shown below. Note that below inventory and setting is just example, not really written configuration.
-
-```
-number_of_controller = 2
-
-number_of_etcd = 2
-
-number_of_controller_etcd = 1
-```
-.. is same to
-```
-[kube-master]
-Instnace-A # (1st master)
-Instnace-B # (2nd master)
-Instnace-C # (3rd master)  (1st etcd)
-
-[etcd]
-Instnace-C # (3rd master)  (1st etcd)
-Instnace-D #               (2nd etcd)
-Instnace-E #               (3rd etcd)
-
-[kube-worker]
-...
-
-```
-
-
-## Step 1. Terraform
+## Step 1. Install Terraform
 
 1. All steps will be conducted under Docker container for beginners.
 
    ```
-   # docker run -it --name test -h aws-kube ubuntu:16.04
+   # docker run -it --name terraform-aws-kube -h terraform-aws-kube ubuntu:16.04
    ```
 
 2. Install required packages.
@@ -92,7 +56,46 @@ Instnace-E #               (3rd etcd)
 
 
 
-## Step 2. Ansible and Kubespray
+## Step 2. Set Variables in variables.tf 
+
+You can change configuration of file ```variables.tf```, such as the number of each node.
+
+- **number_of_controller** : The number of master nodes that act only as a master role. 
+- **number_of_etcd** : The number of etcd nodes that act only as a etcd role. 
+- **number_of_controller_etcd** : The number of nodes that run etcd and master **at the same time**.
+- **number_of_worker** : The number of workers. 
+
+It is recommended that the number of **[etcd + controller_etcd]**, **[controller + controller_etcd]** to be odd. For example, below setting is desirable and can be converted into inventory as shown below. Note that below inventory and setting is just example, not really written configuration.
+
+```
+number_of_controller = 2
+
+number_of_etcd = 2
+
+number_of_controller_etcd = 1
+```
+
+.. is same to
+
+```
+[kube-master]
+Instnace-A # (1st master)
+Instnace-B # (2nd master)
+Instnace-C # (3rd master)  (1st etcd)
+
+[etcd]
+Instnace-C # (3rd master)  (1st etcd)
+Instnace-D #               (2nd etcd)
+Instnace-E #               (3rd etcd)
+
+[kube-worker]
+...
+
+```
+
+[Optional] if you want to change ClusterID, set ```cluster_id_tag``` to another value, not ```alice```.
+
+## Step 3. Ansible and Kubespray
 
 1. In ansible directory, install all dependencies package.
 
@@ -122,7 +125,8 @@ Instnace-E #               (3rd etcd)
 4. Install Kubernetes. Thats all.
 
    ```
-   $ ansible-playbook -b --private-key ../keys/tf-kube kubespray-2.8.1/cluster.yml
+   $ ansible-playbook -b --private-key \
+     ../keys/tf-kube kubespray-2.8.1/cluster.yml
    ```
 
 ## Test
@@ -132,16 +136,16 @@ SSH to your master instance, and get nodes.
 ```
 root@aws-kube:/aws-terraform-kubernetes/ansible# ssh -i ../keys/tf-kube ubuntu@<Master IP>
 ...
-Last login: Tue Mar 19 06:16:33 2019 from <Master IP>
-ubuntu@controller0:~$ sudo su
-root@controller:/home/ubuntu# kubectl get no
-NAME                STATUS   ROLES    AGE     VERSION
-controller.0        Ready    master   7m40s   v1.12.3
-controller.1        Ready    master   6m19s   v1.12.3
-controller.etcd.0   Ready    master   6m21s   v1.12.3
-worker.0            Ready    node     5m26s   v1.12.3
-worker.1            Ready    node     5m26s   v1.12.3
-worker.2            Ready    node     5m26s   v1.12.3
+Last login: Mon Mar 25 10:03:32 2019 from 13.124.49.60
+ubuntu@ip-10-43-0-40:~$ sudo su
+root@ip-10-43-0-40:/home/ubuntu# kubectl get nodes
+NAME                                            STATUS   ROLES    AGE     VERSION
+ip-10-43-0-20.ap-northeast-2.compute.internal   Ready    master   5m2s    v1.12.3
+ip-10-43-0-21.ap-northeast-2.compute.internal   Ready    master   6m16s   v1.12.3
+ip-10-43-0-30.ap-northeast-2.compute.internal   Ready    node     4m9s    v1.12.3
+ip-10-43-0-31.ap-northeast-2.compute.internal   Ready    node     4m4s    v1.12.3
+ip-10-43-0-32.ap-northeast-2.compute.internal   Ready    node     4m4s    v1.12.3
+ip-10-43-0-40.ap-northeast-2.compute.internal   Ready    master   5m2s    v1.12.3
 ```
 
 
