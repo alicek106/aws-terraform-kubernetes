@@ -165,4 +165,3 @@ $ terraform destroy
 - It assumes that **master** acts as an **etcd** node. It should be modified to separate **etcd** and **master** role.(solved)
 - Health check of master node is impossible using https:6443 in ELB. 
 - Node IP range is limited beacuse node IP is allocated between VPC CIDR + 10, 20, 30... etc.  It should be changed if you want to use in production environment.
-- Punctuation (.) is compatible with DNS 1123 rule, but it seems it cannot be used in hostname (ignored..)
