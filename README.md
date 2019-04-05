@@ -48,7 +48,8 @@ Also, This repository will create 3 workers, 3 master, and 3 etcd Kubernetes clu
    $ terraform init && ssh-keygen -t rsa -N "" -f ../keys/tf-kube
    ```
 
-6. Create all objects in AWS. It will trigger to create VPC, Subnet, etc.
+6. Adjust the number of ```etcd```, ```worker```, and ```master``` nodes using **Step 2** as shown below.
+7. Create all objects in AWS. It will trigger to create VPC, Subnet, EC2 instances, etc.
 
    ```
    $ terraform apply
