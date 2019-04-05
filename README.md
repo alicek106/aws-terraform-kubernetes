@@ -44,11 +44,11 @@ Also, This repository will create 3 workers, 3 master, and 3 etcd Kubernetes clu
 
 5. Initialize terraform and generate your SSH key pair for aws_key_pair
 
-6. ```
+   ```
    $ terraform init && ssh-keygen -t rsa -N "" -f ../keys/tf-kube
    ```
 
-7. Create all objects in AWS. It will trigger to create VPC, Subnet, etc.
+6. Create all objects in AWS. It will trigger to create VPC, Subnet, etc.
 
    ```
    $ terraform apply
