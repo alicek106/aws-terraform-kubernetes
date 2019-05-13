@@ -122,6 +122,9 @@ Instnace-E #               (3rd etcd)
    $ wget https://github.com/kubernetes-sigs/kubespray/archive/v2.8.1.zip && \
        unzip v2.8.1.zip && rm v2.8.1.zip
    ```
+----
+**Warning!** Variables of Kubespray (ansible/hosts/group_vars/) is copied from v2.8.1. If you want to use another version of kubespray, you have to remove ansible/hosts/group_vars directory and copy sample variables directory from specific kubespray version. It is usally located in kubespray-x.x.x/inventory/sample/group_vars.
+
 
 4. Install Kubernetes. Thats all.
 
