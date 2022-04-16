@@ -29,9 +29,9 @@ Also, This repository will create 3 workers, 3 master, and 3 etcd Kubernetes clu
 3. Download terraform binary.
 
    ```
-   $ wget https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip && \
-       unzip terraform_0.11.13_linux_amd64.zip && \
-       rm terraform_0.11.13_linux_amd64.zip && \
+   $ wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip && \
+       unzip terraform_1.0.11_linux_amd64.zip && \
+       rm terraform_1.0.11_linux_amd64.zip && \
        mv terraform /usr/bin && chmod +x /usr/bin/terraform
    ```
 
