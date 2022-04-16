@@ -79,24 +79,28 @@ number_of_controller_etcd = 1
 .. is same to
 
 ```
-[kube-master]
+[kube_control_plane:children]
 Instnace-A # (1st master)
 Instnace-B # (2nd master)
 Instnace-C # (3rd master)  (1st etcd)
 
-[etcd]
+[etcd:children]
 Instnace-C # (3rd master)  (1st etcd)
 Instnace-D #               (2nd etcd)
 Instnace-E #               (3rd etcd)
 
-[kube-worker]
+[etcd:children]
 ...
 
 ```
 
+Above example is just example. In [groups](./ansible/hosts/groups), instances are represented as `group`, such as `_controller`. These groups are filtered by [inventory_aws_ec2.yml](./ansible/hosts/inventory_aws_ec2.yml) using `filters`. If you want to change filters to choose instance correctly (e.g. because of change of Owner tag, or change of region, default to ap-northeast-2), edit inventory_aws_ec2.yml file.
+
 [Optional] if you want to change ClusterID, set ```cluster_id_tag``` to another value, not ```alice```.
 
 ## Step 3. Ansible and Kubespray
+
+First of all, edit `inventory_aws_ec2.yml` file to match your own configurations, e.g. region and other tags.
 
 1. In ansible directory, install all dependencies package.
 
