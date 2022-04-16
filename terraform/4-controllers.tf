@@ -17,16 +17,16 @@ resource "aws_instance" "controller" {
   availability_zone      = var.zone
   vpc_security_group_ids = ["${aws_security_group.kubernetes.id}"]
   key_name               = var.default_keypair_name
-  tags = (merge(
+  tags = merge(
     local.common_tags,
-    map(
-      "Owner", "${var.owner}",
-      "Name", "controller-${count.index}",
-      "ansibleFilter", "${var.ansibleFilter}",
-      "ansibleNodeType", "controller",
-      "ansibleNodeName", "controller.${count.index}"
-    )
-  ))
+    {
+      "Owner"           = "${var.owner}"
+      "Name"            = "controller-${count.index}"
+      "ansibleFilter"   = "${var.ansibleFilter}"
+      "ansibleNodeType" = "controller"
+      "ansibleNodeName" = "controller.${count.index}"
+    }
+  )
 }
 
 resource "aws_instance" "controller_etcd" {
@@ -45,16 +45,16 @@ resource "aws_instance" "controller_etcd" {
   vpc_security_group_ids = ["${aws_security_group.kubernetes.id}"]
   key_name               = var.default_keypair_name
 
-  tags = (merge(
+  tags = merge(
     local.common_tags,
-    map(
-      "Owner", "${var.owner}",
-      "Name", "controller-etcd-${count.index}",
-      "ansibleFilter", "${var.ansibleFilter}",
-      "ansibleNodeType", "controller.etcd",
-      "ansibleNodeName", "controller.etcd.${count.index}"
-    )
-  ))
+    {
+      "Owner"           = "${var.owner}",
+      "Name"            = "controller-etcd-${count.index}",
+      "ansibleFilter"   = "${var.ansibleFilter}",
+      "ansibleNodeType" = "controller.etcd",
+      "ansibleNodeName" = "controller.etcd.${count.index}"
+    }
+  )
 }
 
 ###############################
@@ -63,7 +63,7 @@ resource "aws_instance" "controller_etcd" {
 
 resource "aws_elb" "kubernetes_api" {
   name                      = var.elb_name
-  instances                 = ["${aws_instance.controller.*.id}"]
+  instances                 = aws_instance.controller[*].id
   subnets                   = ["${aws_subnet.kubernetes.id}"]
   cross_zone_load_balancing = false
 
@@ -84,13 +84,13 @@ resource "aws_elb" "kubernetes_api" {
     interval            = 30
   }
 
-  tags = (merge(
+  tags = merge(
     local.common_tags,
-    map(
-      "Name", "kubernetes",
-      "Owner", "${var.owner}"
-    )
-  ))
+    {
+      "Name"  = "kubernetes",
+      "Owner" = "${var.owner}"
+    }
+  )
 }
 
 ############
@@ -117,13 +117,13 @@ resource "aws_security_group" "kubernetes_api" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = (merge(
+  tags = merge(
     local.common_tags,
-    map(
-      "Name", "kubernetes-api",
-      "Owner", "${var.owner}"
-    )
-  ))
+    {
+      "Name"  = "kubernetes-api",
+      "Owner" = "${var.owner}"
+    }
+  )
 }
 
 ############

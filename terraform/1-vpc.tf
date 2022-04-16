@@ -6,13 +6,13 @@ resource "aws_vpc" "kubernetes" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
 
-  tags = (merge(
+  tags = merge(
     local.common_tags,
-    map(
-      "Name", "${var.vpc_name}",
-      "Owner", "${var.owner}"
-    )
-  ))
+    {
+      "Name"  = "${var.vpc_name}",
+      "Owner" = "${var.owner}"
+    }
+  )
 }
 
 # DHCP Options are not actually required, being identical to the Default Option Set
@@ -20,13 +20,13 @@ resource "aws_vpc_dhcp_options" "dns_resolver" {
   domain_name         = "${var.region}.compute.internal"
   domain_name_servers = ["AmazonProvidedDNS"]
 
-  tags = (merge(
+  tags = merge(
     local.common_tags,
-    map(
-      "Name", "${var.vpc_name}",
-      "Owner", "${var.owner}"
-    )
-  ))
+    {
+      "Name"  = "${var.vpc_name}",
+      "Owner" = "${var.owner}"
+    }
+  )
 }
 
 resource "aws_vpc_dhcp_options_association" "dns_resolver" {
@@ -54,25 +54,25 @@ resource "aws_subnet" "kubernetes" {
   cidr_block        = var.vpc_cidr
   availability_zone = var.zone
 
-  tags = (merge(
+  tags = merge(
     local.common_tags,
-    map(
-      "Name", "kubernetes",
-      "Owner", "${var.owner}"
-    )
-  ))
+    {
+      "Name"  = "${var.vpc_name}",
+      "Owner" = "${var.owner}"
+    }
+  )
 }
 
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.kubernetes.id
 
-  tags = (merge(
+  tags = merge(
     local.common_tags,
-    map(
-      "Name", "kubernetes",
-      "Owner", "${var.owner}"
-    )
-  ))
+    {
+      "Name"  = "${var.vpc_name}",
+      "Owner" = "${var.owner}"
+    }
+  )
 }
 
 ############
@@ -88,13 +88,13 @@ resource "aws_route_table" "kubernetes" {
     gateway_id = aws_internet_gateway.gw.id
   }
 
-  tags = (merge(
+  tags = merge(
     local.common_tags,
-    map(
-      "Name", "kubernetes",
-      "Owner", "${var.owner}"
-    )
-  ))
+    {
+      "Name"  = "${var.vpc_name}",
+      "Owner" = "${var.owner}"
+    }
+  )
 }
 
 resource "aws_route_table_association" "kubernetes" {
@@ -151,11 +151,11 @@ resource "aws_security_group" "kubernetes" {
     cidr_blocks = ["${var.control_cidr}"]
   }
 
-  tags = (merge(
+  tags = merge(
     local.common_tags,
-    map(
-      "Name", "kubernetes",
-      "Owner", "${var.owner}"
-    )
-  ))
+    {
+      "Name"  = "${var.vpc_name}",
+      "Owner" = "${var.owner}"
+    }
+  )
 }

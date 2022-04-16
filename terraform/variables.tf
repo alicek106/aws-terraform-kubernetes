@@ -1,7 +1,7 @@
 locals {
-  common_tags = (map(
-    "kubernetes.io/cluster/${var.cluster_id_tag}", "${var.cluster_id_value}"
-  ))
+  common_tags = {
+    "kubernetes.io/cluster/${var.cluster_id_tag}" = "${var.cluster_id_value}"
+  }
 }
 
 #############################
@@ -110,16 +110,16 @@ variable "amis" {
   description = "Default AMIs to use for nodes depending on the region"
   type        = map(string)
   default = {
-    ap-northeast-2 = "ami-067c32f3d5b9ace91"
-    ap-northeast-1 = "ami-0567c164"
-    ap-southeast-1 = "ami-a1288ec2"
-    cn-north-1     = "ami-d9f226b4"
-    eu-central-1   = "ami-8504fdea"
-    eu-west-1      = "ami-0d77397e"
-    sa-east-1      = "ami-e93da085"
-    us-east-1      = "ami-40d28157"
-    us-west-1      = "ami-6e165d0e"
-    us-west-2      = "ami-a9d276c9"
+    # Ubuntu Server 20.04 LTS (HVM), SSD Volume Type
+    ap-northeast-2 = "ami-0454bb2fefc7de534"
+    ap-northeast-1 = "ami-088da9557aae42f39"
+    ap-southeast-1 = "ami-055d15d9cfddf7bd3"
+    eu-central-1   = "ami-0d527b8c289b4af7f"
+    eu-west-1      = "ami-08ca3fed11864d6bb"
+    sa-east-1      = "ami-090006f29ecb2d79a"
+    us-east-1      = "ami-04505e74c0741db8d"
+    us-west-1      = "ami-01f87c43e618bf8f0"
+    us-west-2      = "ami-0892d3c7ee96c0bf7"
   }
 }
 variable "default_instance_user" {

@@ -19,16 +19,16 @@ resource "aws_instance" "worker" {
   vpc_security_group_ids = ["${aws_security_group.kubernetes.id}"]
   key_name               = var.default_keypair_name
 
-  tags = (merge(
+  tags = merge(
     local.common_tags,
-    map(
-      "Owner", "${var.owner}",
-      "Name", "worker-${count.index}",
-      "ansibleFilter", "${var.ansibleFilter}",
-      "ansibleNodeType", "worker",
-      "ansibleNodeName", "worker.${count.index}"
-    )
-  ))
+    {
+      "Owner"           = "${var.owner}",
+      "Name"            = "worker-${count.index}",
+      "ansibleFilter"   = "${var.ansibleFilter}",
+      "ansibleNodeType" = "worker",
+      "ansibleNodeName" = "worker.${count.index}"
+    }
+  )
 }
 
 output "kubernetes_workers_public_ip" {
