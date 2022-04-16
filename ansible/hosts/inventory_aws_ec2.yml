@@ -1,0 +1,10 @@
+plugin: aws_ec2
+regions:
+  - ap-northeast-2
+keyed_groups:
+  - key: tags.ansibleNodeType
+filters:
+  instance-state-name : running
+  tag:Owner: alicek106
+compose:
+  ansible_host: private_ip_address

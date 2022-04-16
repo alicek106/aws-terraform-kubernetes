@@ -1,0 +1,8 @@
+# Test playbook to check groups
+# ansible-playbook --private-key <key path> ping.yaml
+---
+- name: ping them all
+  hosts: kube_control_plane
+  tasks:
+    - name: pinging
+      ping:

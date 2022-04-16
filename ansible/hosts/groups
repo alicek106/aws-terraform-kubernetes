@@ -1,29 +1,41 @@
-#######################
-## EC2 Dynamic Inventory Groups
+# ## Configure 'ip' variable to bind kubernetes services on a
+# ## different ip than the default iface
+# ## We should set etcd_member_name for etcd cluster. The node that is not a etcd member do not need to set the value, or can set the empty string value.
 
-[tag_ansibleNodeType_etcd]
+[_controller]
+[_controller_etcd]
+[_etcd]
+[_worker]
 
-[tag_ansibleNodeType_worker]
+# ## configure a bastion host if your nodes are not directly reachable
+# [bastion]
+# bastion ansible_host=x.x.x.x ansible_user=some_user
 
-[tag_ansibleNodeType_controller]
-
-[tag_ansibleNodeType_controller_etcd]
-
-#######################
-#### Kubespray Groups
+[kube_control_plane:children]
+_controller
+_controller_etcd
+# node1
+# node2
+# node3
 
 [etcd:children]
-tag_ansibleNodeType_controller_etcd
-tag_ansibleNodeType_etcd
+_controller_etcd
+_etcd
+# node1
+# node2
+# node3
 
-[kube-node:children]
-tag_ansibleNodeType_worker
+[kube_node:children]
+_worker
+# node2
+# node3
+# node4
+# node5
+# node6
 
-[kube-master:children]
-tag_ansibleNodeType_controller
-tag_ansibleNodeType_controller_etcd
+[calico_rr]
 
-[k8s-cluster:children]
-kube-master
-kube-node
-
+[k8s_cluster:children]
+kube_control_plane
+kube_node
+calico_rr
