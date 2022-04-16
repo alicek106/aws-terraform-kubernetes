@@ -3,58 +3,58 @@
 ############################
 
 resource "aws_instance" "controller" {
-    count = "${var.number_of_controller}"
-    ami = "${lookup(var.amis, var.region)}"
-    instance_type = "${var.controller_instance_type}"
+  count         = var.number_of_controller
+  ami           = lookup(var.amis, var.region)
+  instance_type = var.controller_instance_type
 
-    iam_instance_profile = "${aws_iam_instance_profile.kubernetes.id}"
+  iam_instance_profile = aws_iam_instance_profile.kubernetes.id
 
-    subnet_id = "${aws_subnet.kubernetes.id}"
-    private_ip = "${cidrhost(var.vpc_cidr, 20 + count.index)}"
-    associate_public_ip_address = true # Instances have public, dynamic IP
-    source_dest_check = false # TODO Required??
+  subnet_id                   = aws_subnet.kubernetes.id
+  private_ip                  = cidrhost(var.vpc_cidr, 20 + count.index)
+  associate_public_ip_address = true  # Instances have public, dynamic IP
+  source_dest_check           = false # TODO Required??
 
-    availability_zone = "${var.zone}"
-    vpc_security_group_ids = ["${aws_security_group.kubernetes.id}"]
-    key_name = "${var.default_keypair_name}"
-    tags = "${merge(
+  availability_zone      = var.zone
+  vpc_security_group_ids = ["${aws_security_group.kubernetes.id}"]
+  key_name               = var.default_keypair_name
+  tags = (merge(
     local.common_tags,
-      map(
-        "Owner", "${var.owner}",
-        "Name", "controller-${count.index}",
-        "ansibleFilter", "${var.ansibleFilter}",
-        "ansibleNodeType", "controller",
-        "ansibleNodeName", "controller.${count.index}"
-      )
-    )}"
+    map(
+      "Owner", "${var.owner}",
+      "Name", "controller-${count.index}",
+      "ansibleFilter", "${var.ansibleFilter}",
+      "ansibleNodeType", "controller",
+      "ansibleNodeName", "controller.${count.index}"
+    )
+  ))
 }
 
 resource "aws_instance" "controller_etcd" {
-    count = "${var.number_of_controller_etcd}"
-    ami = "${lookup(var.amis, var.region)}"
-    instance_type = "${var.controller_instance_type}"
+  count         = var.number_of_controller_etcd
+  ami           = lookup(var.amis, var.region)
+  instance_type = var.controller_instance_type
 
-    iam_instance_profile = "${aws_iam_instance_profile.kubernetes.id}"
+  iam_instance_profile = aws_iam_instance_profile.kubernetes.id
 
-    subnet_id = "${aws_subnet.kubernetes.id}"
-    private_ip = "${cidrhost(var.vpc_cidr, 40 + count.index)}"
-    associate_public_ip_address = true # Instances have public, dynamic IP
-    source_dest_check = false # TODO Required??
+  subnet_id                   = aws_subnet.kubernetes.id
+  private_ip                  = cidrhost(var.vpc_cidr, 40 + count.index)
+  associate_public_ip_address = true  # Instances have public, dynamic IP
+  source_dest_check           = false # TODO Required??
 
-    availability_zone = "${var.zone}"
-    vpc_security_group_ids = ["${aws_security_group.kubernetes.id}"]
-    key_name = "${var.default_keypair_name}"
+  availability_zone      = var.zone
+  vpc_security_group_ids = ["${aws_security_group.kubernetes.id}"]
+  key_name               = var.default_keypair_name
 
-    tags = "${merge(
+  tags = (merge(
     local.common_tags,
-      map(
-        "Owner", "${var.owner}",
-        "Name", "controller-etcd-${count.index}",
-        "ansibleFilter", "${var.ansibleFilter}",
-        "ansibleNodeType", "controller.etcd",
-        "ansibleNodeName", "controller.etcd.${count.index}"
-      )
-    )}"
+    map(
+      "Owner", "${var.owner}",
+      "Name", "controller-etcd-${count.index}",
+      "ansibleFilter", "${var.ansibleFilter}",
+      "ansibleNodeType", "controller.etcd",
+      "ansibleNodeName", "controller.etcd.${count.index}"
+    )
+  ))
 }
 
 ###############################
@@ -62,35 +62,35 @@ resource "aws_instance" "controller_etcd" {
 ###############################
 
 resource "aws_elb" "kubernetes_api" {
-    name = "${var.elb_name}"
-    instances = ["${aws_instance.controller.*.id}"]
-    subnets = ["${aws_subnet.kubernetes.id}"]
-    cross_zone_load_balancing = false
+  name                      = var.elb_name
+  instances                 = ["${aws_instance.controller.*.id}"]
+  subnets                   = ["${aws_subnet.kubernetes.id}"]
+  cross_zone_load_balancing = false
 
-    security_groups = ["${aws_security_group.kubernetes_api.id}"]
+  security_groups = ["${aws_security_group.kubernetes_api.id}"]
 
-    listener {
-      lb_port = 6443
-      instance_port = 6443
-      lb_protocol = "TCP"
-      instance_protocol = "TCP"
-    }
+  listener {
+    lb_port           = 6443
+    instance_port     = 6443
+    lb_protocol       = "TCP"
+    instance_protocol = "TCP"
+  }
 
-    health_check {
-      healthy_threshold = 2
-      unhealthy_threshold = 2
-      timeout = 15
-      target = "HTTPS:6443/"
-      interval = 30
-    }
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 15
+    target              = "HTTPS:6443/"
+    interval            = 30
+  }
 
-    tags = "${merge(
-      local.common_tags,
-        map(
-          "Name", "kubernetes",
-          "Owner", "${var.owner}"
-        )
-    )}"
+  tags = (merge(
+    local.common_tags,
+    map(
+      "Name", "kubernetes",
+      "Owner", "${var.owner}"
+    )
+  ))
 }
 
 ############
@@ -98,32 +98,32 @@ resource "aws_elb" "kubernetes_api" {
 ############
 
 resource "aws_security_group" "kubernetes_api" {
-  vpc_id = "${aws_vpc.kubernetes.id}"
-  name = "kubernetes-api"
+  vpc_id = aws_vpc.kubernetes.id
+  name   = "kubernetes-api"
 
   # Allow inbound traffic to the port used by Kubernetes API HTTPS
   ingress {
-    from_port = 6443
-    to_port = 6443
-    protocol = "TCP"
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "TCP"
     cidr_blocks = ["${var.control_cidr}"]
   }
 
   # Allow all outbound traffic
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = "${merge(
+  tags = (merge(
     local.common_tags,
-      map(
-        "Name", "kubernetes-api",
-        "Owner", "${var.owner}"
-      )
-  )}"
+    map(
+      "Name", "kubernetes-api",
+      "Owner", "${var.owner}"
+    )
+  ))
 }
 
 ############
@@ -131,5 +131,5 @@ resource "aws_security_group" "kubernetes_api" {
 ############
 
 output "kubernetes_api_dns_name" {
-  value = "${aws_elb.kubernetes_api.dns_name}"
+  value = aws_elb.kubernetes_api.dns_name
 }
