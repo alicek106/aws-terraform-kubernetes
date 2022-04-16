@@ -101,7 +101,7 @@ Instnace-E #               (3rd etcd)
 1. In ansible directory, install all dependencies package.
 
    ```
-   $ cd ../ansible && pip install -r requirements.txt
+   $ cd ../ansible && pip3 install -r requirements.txt
    ```
 
 2. Install python related modules using **raw** ansible module to all EC2 instances.
@@ -116,21 +116,21 @@ Instnace-E #               (3rd etcd)
    $ ansible --private-key ../keys/tf-kube -m ping all
    ```
 
-3. Download kubespray. You can adjust proper version, but I used v2.8.1 kubespray :D
+3. Download kubespray. You can adjust proper version, but I used v2.18.1 kubespray :D
 
    ```
-   $ wget https://github.com/kubernetes-sigs/kubespray/archive/v2.8.1.zip && \
-       unzip v2.8.1.zip && rm v2.8.1.zip
+   $ wget https://github.com/kubernetes-sigs/kubespray/archive/v2.18.1.zip && \
+       unzip v2.18.1.zip && rm v2.18.1.zip
    ```
 ----
-**Warning!** Variables of Kubespray (ansible/hosts/group_vars/) is copied from v2.8.1. **If you want to use another version of kubespray**, you have to remove ansible/hosts/group_vars directory and copy sample variables directory from specific kubespray version. It is usally located in kubespray-x.x.x/inventory/sample/group_vars.
+**Warning!** Variables of Kubespray (ansible/hosts/group_vars/) is copied from v2.18.1. **If you want to use another version of kubespray**, you have to remove ansible/hosts/group_vars directory and copy sample variables directory from specific kubespray version. It is usally located in kubespray-x.x.x/inventory/sample/group_vars.
 
 
 4. Install Kubernetes. Thats all.
 
    ```
    $ ansible-playbook -b --private-key \
-     ../keys/tf-kube kubespray-2.8.1/cluster.yml
+     ../keys/tf-kube kubespray-2.18.1/cluster.yml
    ```
 
 ## Test
@@ -139,20 +139,19 @@ SSH to your master instance, and get nodes.
 
 ```
 root@aws-kube:/aws-terraform-kubernetes/ansible# ssh -i ../keys/tf-kube ubuntu@<Master IP>
+
 ...
 Last login: Mon Mar 25 10:03:32 2019 from 13.124.49.60
 ubuntu@ip-10-43-0-40:~$ sudo su
 root@ip-10-43-0-40:/home/ubuntu# kubectl get nodes
-NAME                                            STATUS   ROLES    AGE     VERSION
-ip-10-43-0-20.ap-northeast-2.compute.internal   Ready    master   5m2s    v1.12.3
-ip-10-43-0-21.ap-northeast-2.compute.internal   Ready    master   6m16s   v1.12.3
-ip-10-43-0-30.ap-northeast-2.compute.internal   Ready    node     4m9s    v1.12.3
-ip-10-43-0-31.ap-northeast-2.compute.internal   Ready    node     4m4s    v1.12.3
-ip-10-43-0-32.ap-northeast-2.compute.internal   Ready    node     4m4s    v1.12.3
-ip-10-43-0-40.ap-northeast-2.compute.internal   Ready    master   5m2s    v1.12.3
+NAME                                                      STATUS   ROLES                  AGE     VERSION
+ec2-13-125-117-199.ap-northeast-2.compute.amazonaws.com   Ready    <none>                 4m13s   v1.22.8
+ec2-13-125-54-209.ap-northeast-2.compute.amazonaws.com    Ready    control-plane,master   5m34s   v1.22.8
+ec2-13-209-20-227.ap-northeast-2.compute.amazonaws.com    Ready    <none>                 4m12s   v1.22.8
+ec2-3-34-94-130.ap-northeast-2.compute.amazonaws.com      Ready    control-plane,master   6m1s    v1.22.8
+ec2-3-38-165-142.ap-northeast-2.compute.amazonaws.com     Ready    control-plane,master   5m22s   v1.22.8
+ec2-52-79-249-245.ap-northeast-2.compute.amazonaws.com    Ready    <none>                 4m13s   v1.22.8
 ```
-
-
 
 <p align="center"><img src="https://github.com/alicek106/aws-terraform-kubernetes/blob/master/pictures/kube2.png?raw=true" width="570" height="350"></p>
 
@@ -169,4 +168,3 @@ $ terraform destroy
 - It assumes that **master** acts as an **etcd** node. It should be modified to separate **etcd** and **master** role.(solved)
 - Health check of master node is impossible using https:6443 in ELB. (It is recommended to use another proxy such as nginx in Master Node for healthcheck. Health check proxy should be deployed by yourself :D)
 - Node IP range is limited beacuse node IP is allocated between VPC CIDR + 10, 20, 30... etc.  It should be changed if you want to use in production environment.
-- **(Important!)** If error occurs related to Ansible, downgrade Ansible version to below 2.7.0.
